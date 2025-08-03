@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Progress, Tag, Textarea } from '@/components/ui'
 import { useHash } from './use-hash'
+import { Loader } from 'lucide-react'
 
 export function HashGenerator({
   file,
@@ -20,13 +21,15 @@ export function HashGenerator({
       <div className='mb-2'>
         {status === 'working' && (
           <>
-            <p>Working...</p>
+            <p>
+              Working... <Loader className='w-4 h-4 inline animate-spin' />
+            </p>
             <Progress value={progress} />
           </>
         )}
         {status === 'done' && (
           <p>
-            Hash for file <Tag variant='muted'>{file.name}</Tag> is...
+            SHA-256 hash for file <Tag variant='muted'>{file.name}</Tag> is...
           </p>
         )}
       </div>
