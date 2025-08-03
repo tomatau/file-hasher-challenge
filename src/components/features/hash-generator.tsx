@@ -36,7 +36,7 @@ export function HashGenerator({
       <Textarea
         id='hashed-value'
         value={hash}
-        placeholder='Your hash will be shown here....'
+        placeholder='Your hash will be shown here...'
         className='pointer-events-none placeholder-gray-500 '
         readOnly
       />
