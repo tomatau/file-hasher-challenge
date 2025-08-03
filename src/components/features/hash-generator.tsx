@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Textarea } from '@/components/ui'
+import { Progress, Tag, Textarea } from '@/components/ui'
 import { useHash } from './use-hash'
 
 export function HashGenerator({
@@ -9,7 +9,7 @@ export function HashGenerator({
   file: File
   onDone: (hash: string) => void
 }) {
-  const { status, hash } = useHash(file)
+  const { status, hash, progress } = useHash(file)
 
   useEffect(() => {
     if (status === 'done') onDone(hash ?? '')
@@ -17,8 +17,19 @@ export function HashGenerator({
 
   return (
     <div className='w-full'>
-      {status === 'working' && <p>Working...</p>}
-      {status === 'done' && <p>Your hash is...</p>}
+      <div className='mb-2'>
+        {status === 'working' && (
+          <>
+            <p>Working...</p>
+            <Progress value={progress} />
+          </>
+        )}
+        {status === 'done' && (
+          <p>
+            Hash for file <Tag variant='muted'>{file.name}</Tag> is...
+          </p>
+        )}
+      </div>
       <Textarea
         id='hashed-value'
         value={hash}

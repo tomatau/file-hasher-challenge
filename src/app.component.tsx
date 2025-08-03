@@ -5,9 +5,10 @@ import { useCallback, useState } from 'react'
 
 export function App() {
   const [file, setFile] = useState<File | null>(null)
-  const [status, setStatus] = useState('no-file')
+  const [status, setStatus] = useState<'idle' | 'generating' | 'done'>('idle')
 
   const handleSetFile = useCallback((files: FileList | null) => {
+    setStatus('idle')
     const file = files?.item(0)
     if (file) setFile(file)
     else setFile(null)

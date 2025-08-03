@@ -1,7 +1,8 @@
 export type PayloadWorking = {
   status: 'working'
   payload: {
-    received: File
+    file: File
+    progress: number
   }
 }
 
@@ -9,7 +10,7 @@ export type PayloadDone = {
   status: 'done'
   payload: {
     hash: string
-    received: File
+    file: File
   }
 }
 

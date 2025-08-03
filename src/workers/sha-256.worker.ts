@@ -11,7 +11,7 @@ self.onmessage = async ({ data: { file } }: MessageEvent<{ file: File }>) => {
 
   self.postMessage({
     status: 'working',
-    payload: { received: file },
+    payload: { file, progress: 0 },
   } satisfies PayloadWorking)
 
   while (offset < file.size) {
@@ -20,12 +20,16 @@ self.onmessage = async ({ data: { file } }: MessageEvent<{ file: File }>) => {
     const typedbuffer = new Uint8Array(buffer)
     sha256.update(typedbuffer)
     offset += buffer.byteLength
+    self.postMessage({
+      status: 'working',
+      payload: { file, progress: (offset / file.size) * 100 },
+    } satisfies PayloadWorking)
   }
 
   const hash = sha256.digest('hex')
 
   self.postMessage({
     status: 'done',
-    payload: { received: file, hash },
+    payload: { file, hash },
   } satisfies PayloadDone)
 }
