@@ -18,7 +18,17 @@ export function FileDropper({ file, onSetFile }: FileDropperProps) {
       onDrop={onSetFile}
       onTargetClick={() => inputRef.current?.click()}
     >
-      {file ? <SelectedFile file={file} /> : <FileDropperPlaceholder />}
+      {file ? (
+        <SelectedFile
+          onClickClear={e => {
+            e.stopPropagation()
+            onSetFile(null)
+          }}
+          file={file}
+        />
+      ) : (
+        <FileDropperPlaceholder />
+      )}
       <input
         type='file'
         ref={inputRef}

@@ -5,7 +5,7 @@ test('homepage has title and instructions', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('h1')).toContainText('File Hasher')
   await expect(page.locator('.file-drop')).toContainText(
-    `Drag'n'drop a file or click to select one from your device`
+    `Drag'n'drop a file here or click to select one from your device`
   )
 })
 
