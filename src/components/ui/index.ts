@@ -1,6 +1,7 @@
 export * from './button'
 export * from './button-variants'
 export * from './heading'
+export * from './label'
 export * from './progress'
 export * from './tag'
 export * from './textarea'

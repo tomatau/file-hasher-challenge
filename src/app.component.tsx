@@ -9,9 +9,7 @@ export function App() {
 
   const handleSetFile = useCallback((files: FileList | null) => {
     setStatus('idle')
-    const file = files?.item(0)
-    if (file) setFile(file)
-    else setFile(null)
+    setFile(files?.item(0) ?? null)
   }, [])
 
   return (

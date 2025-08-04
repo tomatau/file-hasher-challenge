@@ -1,7 +1,9 @@
-import { useEffect } from 'react'
-import { Progress, Tag, Textarea } from '@/components/ui'
-import { useHash } from './use-hash'
+import { Progress, Tag } from '@/components/ui'
 import { Loader } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { FileDescription } from './file-description'
+import { useHash } from './use-hash'
+import { formatFileSize } from '@/utils'
 
 export function HashGenerator({
   file,
@@ -10,6 +12,7 @@ export function HashGenerator({
   file: File
   onDone: (hash: string) => void
 }) {
+  const [description, setDescription] = useState<string>('')
   const { status, hash, progress } = useHash(file)
 
   useEffect(() => {
@@ -18,6 +21,10 @@ export function HashGenerator({
 
   return (
     <div className='w-full'>
+      <FileDescription
+        value={description}
+        onChange={e => setDescription(e.target.value)}
+      />
       <div className='mb-2'>
         {status === 'working' && (
           <>
@@ -27,19 +34,36 @@ export function HashGenerator({
             <Progress value={progress} />
           </>
         )}
+        {status === 'error' && (
+          <>
+            <p className='text-blue-800'>
+              There was an error hashing your file. Try a new file.
+            </p>
+          </>
+        )}
         {status === 'done' && (
-          <p>
-            SHA-256 hash for file <Tag variant='muted'>{file.name}</Tag> is...
-          </p>
+          <div data-test-id='hash-result' className='display'>
+            <dl>
+              <dt className='font-bold'>File</dt>
+              <dd className='mb-1'>
+                <Tag variant='muted'>{file.name}</Tag>
+              </dd>
+              <dt className='font-bold'>Size</dt>
+              <dd className='mb-1'>
+                <Tag variant='muted'>{formatFileSize(file.size)}</Tag>
+              </dd>
+              {description && (
+                <>
+                  <dt className='font-bold'>Description</dt>
+                  <dd className='mb-1'>{description}</dd>
+                </>
+              )}
+              <dt className='font-bold'>Sha 256 hash</dt>
+              <dd className='text-green-800'>{hash}</dd>
+            </dl>
+          </div>
         )}
       </div>
-      <Textarea
-        id='hashed-value'
-        value={hash}
-        placeholder='Your hash will be shown here...'
-        className='pointer-events-none placeholder-gray-500 '
-        readOnly
-      />
     </div>
   )
 }

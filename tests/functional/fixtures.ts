@@ -17,7 +17,7 @@ export function createFixture(
   sizeInMB: number
 ): Promise<{ filePath: string; hash: string }> {
   const filePath = path.join(fixturesDir, fileName)
-  const buffer = crypto.randomBytes(sizeInMB * 1024 * 1024)
+  const buffer = crypto.randomBytes(sizeInMB * 1000 * 1000)
 
   fs.writeFileSync(filePath, buffer)
 

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, Page } from '@playwright/test'
 import { createFixture } from './fixtures'
 
 test('homepage has title and instructions', async ({ page }) => {
@@ -18,6 +18,25 @@ test('supports selecting a file', async ({ page }) => {
   await expect(page.locator('button')).toHaveText('Generate hash')
 })
 
+const assertResult = async (
+  page: Page,
+  fileName: string,
+  size: string,
+  hash: string,
+  description?: string
+) => {
+  await expect(page.getByTestId('hash-result')).toContainText(`File${fileName}`)
+  await expect(page.getByTestId('hash-result')).toContainText(`Size${size}`)
+  if (description) {
+    await expect(page.getByTestId('hash-result')).toContainText(
+      `Description${description}`
+    )
+  }
+  await expect(page.getByTestId('hash-result')).toContainText(
+    `Sha 256 hash${hash}`
+  )
+}
+
 test('shows loading indicator and generates a hash', async ({ page }) => {
   await page.goto('/')
   const fileName = 'test.mp4'
@@ -26,16 +45,7 @@ test('shows loading indicator and generates a hash', async ({ page }) => {
   await page.locator('button').click()
   await expect(page.locator('button')).toHaveJSProperty('disabled', true)
   await expect(page.getByText('Working... ')).toBeVisible()
-  await expect(page.locator('textarea')).toHaveText('')
-  await expect(page.locator('textarea')).toHaveAttribute(
-    'placeholder',
-    'Your hash will be shown here...'
-  )
-  await expect(page.locator('textarea')).toHaveJSProperty('readOnly', true)
-  await expect(
-    page.getByText(`SHA-256 hash for file ${fileName} is...`)
-  ).toBeVisible()
-  await expect(page.locator('textarea')).toHaveText(hash)
+  await assertResult(page, fileName, '65MB', hash)
 })
 
 test('supports small files', async ({ page }) => {
@@ -44,14 +54,25 @@ test('supports small files', async ({ page }) => {
   const { filePath, hash } = await createFixture(fileName, 1)
   await page.locator('input[type=file]').setInputFiles(filePath)
   await page.locator('button').click()
-  await expect(page.locator('textarea')).toHaveText(hash)
+  await assertResult(page, fileName, '1MB', hash)
 })
 
 test('supports large files', async ({ page }) => {
   await page.goto('/')
   const fileName = 'large-file.bin'
+  const { filePath, hash } = await createFixture(fileName, 200)
+  await page.locator('input[type=file]').setInputFiles(filePath)
+  await page.locator('button').click()
+  await assertResult(page, fileName, '200MB', hash)
+})
+
+test('supports a description', async ({ page }) => {
+  await page.goto('/')
+  const fileName = 'small-file.txt'
+  const description = 'This is a description'
   const { filePath, hash } = await createFixture(fileName, 1)
   await page.locator('input[type=file]').setInputFiles(filePath)
   await page.locator('button').click()
-  await expect(page.locator('textarea')).toHaveText(hash)
+  await page.locator('textarea').fill(description)
+  await assertResult(page, fileName, '1MB', hash, description)
 })
