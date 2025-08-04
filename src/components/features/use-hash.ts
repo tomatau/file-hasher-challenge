@@ -6,6 +6,7 @@ export function useHash(file: File | null) {
   const [status, setStatus] = useState<WorkerStatus>('idle')
   const [hash, setHash] = useState<string>()
   const [progress, setProgress] = useState<number>()
+  const [error, setError] = useState<string>()
 
   useEffect(() => {
     if (!file) {
@@ -37,10 +38,16 @@ export function useHash(file: File | null) {
         setStatus('working')
         setProgress(progress)
       }
+      if (status === 'error') {
+        const { error } = payload
+        setStatus('error')
+        setProgress(undefined)
+        setError(error.message)
+      }
     }
 
     return () => worker.terminate()
   }, [file])
 
-  return { status, hash, progress }
+  return { status, hash, progress, error }
 }

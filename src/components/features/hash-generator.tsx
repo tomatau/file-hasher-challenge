@@ -13,7 +13,7 @@ export function HashGenerator({
   onDone: (hash: string) => void
 }) {
   const [description, setDescription] = useState<string>('')
-  const { status, hash, progress } = useHash(file)
+  const { status, hash, progress, error } = useHash(file)
 
   useEffect(() => {
     if (status === 'done') onDone(hash ?? '')
@@ -36,9 +36,10 @@ export function HashGenerator({
         )}
         {status === 'error' && (
           <>
-            <p className='text-blue-800'>
-              There was an error hashing your file. Try a new file.
-            </p>
+            <p>There was an error hashing your file. Try a new file.</p>
+            <Tag variant='muted' className='text-blue-800'>
+              {error}
+            </Tag>
           </>
         )}
         {status === 'done' && (

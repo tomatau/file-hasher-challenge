@@ -15,6 +15,11 @@ export function App() {
   return (
     <Main>
       <Heading>File Hasher</Heading>
+      <p>Drop a file below and then press the generate hash button.</p>
+      <p>
+        This app will spin up a web worker using wasm to generate a sha-256 hash
+        of the file.
+      </p>
       <FileDropper file={file} onSetFile={handleSetFile} />
       {file && (
         <>
