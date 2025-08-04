@@ -1,5 +1,5 @@
 import { Progress, Tag } from '@/components/ui'
-import { Loader } from 'lucide-react'
+import { Copy, Loader } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FileDescription } from './file-description'
 import { useHash } from './use-hash'
@@ -56,11 +56,21 @@ export function HashGenerator({
               {description && (
                 <>
                   <dt className='font-bold'>Description</dt>
-                  <dd className='mb-1'>{description}</dd>
+                  <dd className='mb-1'>
+                    <Tag variant='muted'>{description}</Tag>
+                  </dd>
                 </>
               )}
-              <dt className='font-bold'>Sha 256 hash</dt>
-              <dd className='text-green-800'>{hash}</dd>
+              <dt className='font-bold'>Sha 256 hash </dt>
+              <dd className='flex gap-2'>
+                <Tag variant='muted'>
+                  <span className='text-green-800'>{hash}</span>
+                </Tag>
+                <Copy
+                  className='cursor-pointer stroke-gray-500 hover:stroke-purple-500 w-6 h-6'
+                  onClick={() => navigator.clipboard.writeText(hash ?? '')}
+                />
+              </dd>
             </dl>
           </div>
         )}
